@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>HTTP POST Interceptor</title>
-    <style>
-      table,
-      th,
-      td {
-        border: 1px solid black;
-      }
-    </style>
-  </head>
-  <body>
-    <table>
-      <thead>
-        <tr>
-          <th>Timestamp</th>
-          <th>URL</th>
-          <th>Payload</th>
-          <th>Response</th>
-        </tr>
-      </thead>
-      <tbody id="dataBody"></tbody>
-    </table>
-    <script src="popup.js"></script>
-  </body>
+<head>
+  <title>HTTP POST Interceptor</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <button id="clearButton">Clear Data</button> <!-- Added clear button -->
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>URL</th>
+        <th>Payload</th>
+        <th>Response</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody">
+    </tbody>
+  </table>
+  <script src="popup.js"></script>
+</body>
 </html>

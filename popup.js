@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-  chrome.runtime.sendMessage({ action: "getData" }, function (response) {
-    const tbody = document.getElementById("dataBody");
-    response.forEach((item) => {
+document.addEventListener('DOMContentLoaded', () => {
+  chrome.runtime.sendMessage({action: "getData"}, function(response) {
+    const tbody = document.getElementById('dataBody');
+    response.forEach(item => {
       const row = tbody.insertRow();
       const timestampCell = row.insertCell(0);
       const urlCell = row.insertCell(1);
@@ -12,6 +12,15 @@ document.addEventListener("DOMContentLoaded", () => {
       urlCell.textContent = item.url;
       payloadCell.textContent = JSON.stringify(item.payload);
       responseCell.textContent = JSON.stringify(item.response);
+    });
+  });
+  
+  // Clear Button Event Listener
+  const clearButton = document.getElementById('clearButton');
+  clearButton.addEventListener('click', () => {
+    chrome.runtime.sendMessage({action: "clearData"}, function() {
+      const tbody = document.getElementById('dataBody');
+      tbody.innerHTML = '';
     });
   });
 });

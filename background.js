@@ -32,49 +32,19 @@ chrome.webRequest.onBeforeRequest.addListener(
         timestamp: new Date().toISOString(), // Adding timestamp
       });
     }
-    // Attach debugger to tab to get the response body
-    const tabId = details.tabId;
-    if (tabId !== chrome.tabs.TAB_ID_NONE) {
-      chrome.debugger.attach({ tabId: tabId }, "1.2", () => {
-        chrome.debugger.sendCommand({ tabId: tabId }, "Network.enable");
-      });
-    }
   },
   { urls: ["<all_urls>"], types: ["xmlhttprequest"] },
   ["requestBody"]
 );
 
-chrome.debugger.onEvent.addListener((debuggeeId, message, params) => {
-  if (
-    message === "Network.responseReceived" &&
-    params.type === "XHR" &&
-    params.response.url.includes("bff")
-  ) {
-    chrome.debugger.sendCommand(
-      debuggeeId,
-      "Network.getResponseBody",
-      { requestId: params.requestId },
-      (responseBody) => {
-        for (let data of interceptedData) {
-          if (data.url === params.response.url) {
-            try {
-              const jsonBody = JSON.parse(responseBody.body);
-              data.response = jsonBody;
-            } catch (e) {
-              console.error("Error parsing response body:", e);
-            }
-          }
-        }
-      }
-    );
-  }
-});
-
 chrome.webRequest.onCompleted.addListener(
   (details) => {
-    const tabId = details.tabId;
-    if (tabId !== chrome.tabs.TAB_ID_NONE) {
-      chrome.debugger.detach({ tabId: tabId });
+    if (details.method === "POST" && details.url.includes("bff")) {
+      for (let data of interceptedData) {
+        if (data.url === details.url) {
+          data.response = details.statusCode + " " + details.statusText;
+        }
+      }
     }
   },
   { urls: ["<all_urls>"], types: ["xmlhttprequest"] }
@@ -86,6 +56,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       interceptedData.sort(
         (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
       )
-    ); // Sorting by recent timestamp
+    );
+  } else if (message.action === "clearData") {
+    interceptedData.length = 0; // Clearing the data array
+    sendResponse({ status: "Cleared" });
   }
 });
