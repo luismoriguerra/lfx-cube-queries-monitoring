@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "HTTP POST Interceptor BFF",
+  "version": "1.0",
+  "description": "Intercepts HTTP POST requests and displays them",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["webRequest", "webRequestBlocking", "storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html"],
+      "matches": ["<all_urls>"],
+      "use_dynamic_url": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "host_permissions": ["http://*/*", "https://*/*"]
+}
