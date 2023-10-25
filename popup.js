@@ -1,14 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-  chrome.runtime.sendMessage({ action: "getData" }, (data) => {
+  chrome.runtime.sendMessage({ action: "getData" }, function (response) {
     const tbody = document.getElementById("dataBody");
-    data.forEach((item) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-          <td>${item.url}</td>
-          <td>${JSON.stringify(item.payload)}</td>
-          <td>${item.response}</td>
-        `;
-      tbody.appendChild(tr);
+    response.forEach((item) => {
+      const row = tbody.insertRow();
+      const timestampCell = row.insertCell(0);
+      const urlCell = row.insertCell(1);
+      const payloadCell = row.insertCell(2);
+      const responseCell = row.insertCell(3);
+
+      timestampCell.textContent = item.timestamp;
+      urlCell.textContent = item.url;
+      payloadCell.textContent = JSON.stringify(item.payload);
+      responseCell.textContent = JSON.stringify(item.response);
     });
   });
 });
